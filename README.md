@@ -1,5 +1,6 @@
-# cripto-exchange
+# Crypto Exchange
 
+An app that provide information about the current prices of a great number of cryptocurrencies.
 ## Project setup
 ```
 npm install
