@@ -1,17 +1,16 @@
 <template>
   <main>
     <ex-header />
-    <ex-assets-table />
+    <router-view class="container px-5 sm:px-20 py-20 flex justify-center" />
   </main>
 </template>
 
 <script>
 import ExHeader from "@/components/ExHeader";
-import ExAssetsTable from "./components/ExAssetsTable.vue";
 
 export default {
   name: "app",
-  components: { ExHeader, ExAssetsTable },
+  components: { ExHeader },
 };
 </script>
 
