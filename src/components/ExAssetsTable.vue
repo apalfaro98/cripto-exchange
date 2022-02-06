@@ -15,14 +15,20 @@
     </thead>
     <tbody>
       <tr
+        v-for="a in assets"
+        :key="a.id"
         class="border-b border-gray-200 hover:bg-gray-100 hover:bg-orange-100"
       >
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>
+          <img :src="a.image" :alt="a.name" width="100px" height="100px" />
+        </td>
+        <td>{{ a.market_cap_rank }}</td>
+        <td>
+          <b>{{ a.name }}</b>
+        </td>
+        <td>{{ a.current_price }}</td>
+        <td>{{ a.market_cap }}</td>
+        <td>{{ a.price_change_percentage_24h }}</td>
         <td class="hidden sm:block"></td>
       </tr>
     </tbody>
@@ -62,7 +68,12 @@ th {
   font-size: 0.6rem;
 }
 
-@media (min-width: 640px) {
+img {
+  display: block;
+  min-width: 70px;
+}
+
+@media (min-width: 320px) {
   td,
   th {
     padding: 20px;
