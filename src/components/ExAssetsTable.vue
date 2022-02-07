@@ -20,7 +20,7 @@
         class="border-b border-gray-200 hover:bg-gray-100 hover:bg-orange-100"
       >
         <td>
-          <img :src="a.image" :alt="a.name" width="100px" height="100px" />
+          <img :src="a.image" :alt="a.name" />
         </td>
         <td>{{ a.market_cap_rank }}</td>
         <td>
@@ -70,7 +70,7 @@ th {
 
 img {
   display: block;
-  min-width: 70px;
+  min-width: 30px;
 }
 
 @media (min-width: 320px) {
