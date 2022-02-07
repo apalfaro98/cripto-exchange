@@ -20,15 +20,24 @@
         class="border-b border-gray-200 hover:bg-gray-100 hover:bg-orange-100"
       >
         <td>
-          <img :src="a.image" :alt="a.name" />
+          <img :src="a.image" :alt="a.name" class="w-6" />
         </td>
         <td>{{ a.market_cap_rank }}</td>
         <td>
           <b>{{ a.name }}</b>
         </td>
-        <td>{{ a.current_price }}</td>
-        <td>{{ a.market_cap }}</td>
-        <td>{{ a.price_change_percentage_24h }}</td>
+        <td>{{ a.current_price | dollar }}</td>
+        <td>{{ a.market_cap | dollar }}</td>
+        <td
+          :class="
+            a.price_change_percentage_24h < 0
+              ? 'text-red-500'
+              : 'text-green-500'
+          "
+          class="font-bold"
+        >
+          {{ a.price_change_percentage_24h | percent }}
+        </td>
         <td class="hidden sm:block"></td>
       </tr>
     </tbody>
