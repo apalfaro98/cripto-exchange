@@ -98,9 +98,8 @@ export default {
     },
     getHistory() {
       const id = this.$route.params.id;
-      let value = [];
       api.getHistory24Hours(id).then((data) => {
-        this.prices = data.prices.map((e) => [...value, e.pop()]);
+        this.prices = data.prices.map((e) => e.pop());
       });
     },
   },
@@ -112,7 +111,9 @@ export default {
     min() {
       return Math.min(...this.prices);
     },
-    avg() {},
+    avg() {
+      return this.prices.reduce((p, c) => p + c) / this.prices.length;
+    },
   },
 };
 </script>
