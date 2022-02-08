@@ -112,6 +112,7 @@ export default {
       return Math.min(...this.prices);
     },
     avg() {
+      if (this.prices.length == 0) return 0;
       return this.prices.reduce((p, c) => p + c) / this.prices.length;
     },
   },

@@ -24,7 +24,17 @@
         </td>
         <td>{{ a.market_cap_rank }}</td>
         <td>
-          <b>{{ a.name }}</b>
+          <b>
+            <router-link
+              class="hover:underline text-green-500"
+              :to="{ name: 'coin-detail', params: { id: a.id } }"
+            >
+              {{ a.name }}
+            </router-link>
+            <small class="ml-1 text-gray-500 uppercase">
+              {{ a.symbol }}
+            </small>
+          </b>
         </td>
         <td>{{ a.current_price | dollar }}</td>
         <td>{{ a.market_cap | dollar }}</td>
@@ -38,20 +48,34 @@
         >
           {{ a.price_change_percentage_24h | percent }}
         </td>
-        <td class="hidden sm:block"></td>
+        <td class="sm:block">
+          <ex-button @custom-click="getCoin(a.id)">
+            <span>Detalles</span>
+          </ex-button>
+        </td>
       </tr>
     </tbody>
   </table>
 </template>
 
 <script>
+import ExButton from "./ExButton.vue";
+
 export default {
   name: "ExAssetsTable",
+
+  components: { ExButton },
 
   props: {
     assets: {
       type: Array,
       default: () => [],
+    },
+  },
+
+  methods: {
+    getCoin(id) {
+      this.$router.push({ name: "coin-detail", params: { id } });
     },
   },
 };
