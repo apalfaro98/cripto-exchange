@@ -1,6 +1,9 @@
 <template>
   <div class="flex-col">
-    <template v-if="asset.id">
+    <div class="flex justify-center">
+      <circle-loader :loading="isLoading" :color="'#68d391'" :size="100" />
+    </div>
+    <template v-if="!isLoading">
       <div class="flex flex-col lg:flex-row lg:justify-around lg:items-center">
         <div
           class="flex flex-col md:flex-row md:justify-between md:items-center"
@@ -83,10 +86,12 @@ export default {
     return {
       asset: {},
       prices: [],
+      isLoading: false,
     };
   },
 
   created() {
+    this.isLoading = true;
     this.getCoin();
     this.getHistory();
   },
@@ -98,9 +103,12 @@ export default {
     },
     getHistory() {
       const id = this.$route.params.id;
-      api.getHistory24Hours(id).then((data) => {
-        this.prices = data.prices.map((e) => e.pop());
-      });
+      api
+        .getHistory24Hours(id)
+        .then((data) => {
+          this.prices = data.prices.map((e) => e.pop());
+        })
+        .finally(() => (this.isLoading = false));
     },
   },
 
