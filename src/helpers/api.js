@@ -18,8 +18,20 @@ const getHistory24Hours = async (id) => {
   ).then((resp) => resp.json());
 };
 
+const getMarkets = async (id) => {
+  return fetch(
+    `${url}coins/${id}/tickers?include_exchange_logo=true&page=1`
+  ).then((resp) => resp.json());
+};
+
+const getExchangeURL = async (id) => {
+  return fetch(`${url}exchanges/${id}`).then((resp) => resp.json());
+};
+
 export default {
   getAssets,
   getAsset,
   getHistory24Hours,
+  getMarkets,
+  getExchangeURL,
 };

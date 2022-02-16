@@ -74,12 +74,48 @@
           <span class="text-xl"></span>
         </div>
       </div>
+      <line-chart
+        class="my-10"
+        :colors="['#fc5353']"
+        :min="(parseFloat(min) - 0.02).toFixed(2)"
+        :max="parseFloat(max).toFixed(2) + 0.02"
+        :data="data"
+      />
+      <h3 class="text-xl my-10">Mejores Ofertas de Cambio</h3>
+      <table>
+        <tr v-for="m in markets" :key="m.volume" class="border-b">
+          <td class="flex items-center">
+            <img
+              :src="m.market.logo"
+              :alt="m.market.name"
+              class="w-11 pr-3 py-1"
+            />
+            <b>{{ m.market.name }}</b>
+          </td>
+          <td>{{ m.last | dollar }}</td>
+          <td>{{ m.base }} / {{ m.target }}</td>
+          <td>
+            <ex-button v-if="!m.market.url" @custom-click="getUrl(m.market)">
+              <slot>Obtener Link</slot>
+            </ex-button>
+
+            <a
+              v-else
+              class="hover:underline text-green-600 cursor-pointer"
+              target="_blanck"
+              :href="m.market.url"
+              >{{ m.market.url }}</a
+            >
+          </td>
+        </tr>
+      </table>
     </template>
   </div>
 </template>
 
 <script>
 import api from "@/helpers/api";
+import ExButton from "@/components/ExButton";
 
 export default {
   data() {
@@ -87,28 +123,45 @@ export default {
       asset: {},
       prices: [],
       isLoading: false,
+      data: {},
+      markets: [],
     };
   },
+
+  components: { ExButton },
 
   created() {
     this.isLoading = true;
     this.getCoin();
-    this.getHistory();
   },
 
   methods: {
     getCoin() {
       const id = this.$route.params.id;
-      api.getAsset(id).then((data) => (this.asset = data));
-    },
-    getHistory() {
-      const id = this.$route.params.id;
-      api
-        .getHistory24Hours(id)
-        .then((data) => {
-          this.prices = data.prices.map((e) => e.pop());
+      Promise.all([
+        api.getAsset(id),
+        api.getHistory24Hours(id),
+        api.getMarkets(id),
+      ])
+        .then(([asset, history, markets]) => {
+          this.asset = asset;
+          this.prices = history.prices.map((e) => e.pop());
+          const now = new Date();
+          now.setHours(now.getHours() - 25);
+          for (const price of this.prices) {
+            now.setHours(now.getHours() + 1);
+            this.data[`${now}`] = price;
+          }
+          this.markets = markets.tickers
+            .filter((e) => e.base == "BTC")
+            .slice(0, 10);
         })
         .finally(() => (this.isLoading = false));
+    },
+    getUrl(market) {
+      return api
+        .getExchangeURL(market.identifier)
+        .then((resp) => this.$set(market, "url", resp.url));
     },
   },
 
