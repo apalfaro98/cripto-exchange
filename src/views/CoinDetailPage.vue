@@ -95,8 +95,12 @@
           <td>{{ m.last | dollar }}</td>
           <td>{{ m.base }} / {{ m.target }}</td>
           <td>
-            <ex-button v-if="!m.market.url" @custom-click="getUrl(m.market)">
-              <slot>Obtener Link</slot>
+            <ex-button
+              :is-loading="m.market.isLoading || false"
+              v-if="!m.market.url"
+              @custom-click="getUrl(m.market)"
+            >
+              <slot><span>Obtener Link</span></slot>
             </ex-button>
 
             <a
@@ -159,9 +163,13 @@ export default {
         .finally(() => (this.isLoading = false));
     },
     getUrl(market) {
+      this.$set(market, "isLoading", true);
       return api
         .getExchangeURL(market.identifier)
-        .then((resp) => this.$set(market, "url", resp.url));
+        .then((resp) => this.$set(market, "url", resp.url))
+        .finally(() => {
+          this.$set(market, "isLoading", false);
+        });
     },
   },
 
