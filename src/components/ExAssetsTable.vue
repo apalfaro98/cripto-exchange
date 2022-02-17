@@ -10,12 +10,20 @@
         <th>Precio</th>
         <th>Cap. de Mercado</th>
         <th>Variación 24hs</th>
-        <td class="hidden sm:block"></td>
+        <td class="hidden sm:block">
+          <input
+            class="bg-gray-100 focus:outline-none border-b border-gray-400 py-2 px-4 block w-full appearance-none leading-normal"
+            id="filter"
+            placeholder="Buscar..."
+            type="text"
+            v-model="filter"
+          />
+        </td>
       </tr>
     </thead>
     <tbody>
       <tr
-        v-for="a in assets"
+        v-for="a in filteredAssets"
         :key="a.id"
         class="border-b border-gray-200 hover:bg-gray-100"
       >
@@ -64,6 +72,12 @@ import ExButton from "./ExButton.vue";
 export default {
   name: "ExAssetsTable",
 
+  data() {
+    return {
+      filter: "",
+    };
+  },
+
   components: { ExButton },
 
   props: {
@@ -76,6 +90,16 @@ export default {
   methods: {
     getCoin(id) {
       this.$router.push({ name: "coin-detail", params: { id } });
+    },
+  },
+
+  computed: {
+    filteredAssets() {
+      return this.assets.filter(
+        (e) =>
+          e.name.toLowerCase().includes(this.filter) |
+          e.symbol.toLowerCase().includes(this.filter)
+      );
     },
   },
 };
