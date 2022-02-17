@@ -4,7 +4,12 @@
       <tr class="bg-gray-100 border-b-2 border-gray-400">
         <th></th>
         <th>
-          <span>Ranking</span>
+          <span
+            class="underline cursor-pointer"
+            :class="orderAsc ? 'up' : 'down'"
+            @click="invertOrder()"
+            >Ranking</span
+          >
         </th>
         <th>Nombre</th>
         <th>Precio</th>
@@ -75,6 +80,7 @@ export default {
   data() {
     return {
       filter: "",
+      orderAsc: true,
     };
   },
 
@@ -91,15 +97,19 @@ export default {
     getCoin(id) {
       this.$router.push({ name: "coin-detail", params: { id } });
     },
+    invertOrder() {
+      this.orderAsc = !this.orderAsc;
+    },
   },
 
   computed: {
     filteredAssets() {
-      return this.assets.filter(
+      const filt = this.assets.filter(
         (e) =>
-          e.name.toLowerCase().includes(this.filter) |
-          e.symbol.toLowerCase().includes(this.filter)
+          e.name.toLowerCase().includes(this.filter.toLowerCase()) ||
+          e.symbol.toLowerCase().includes(this.filter.toLowerCase())
       );
+      return this.orderAsc ? filt : filt.reverse();
     },
   },
 };
