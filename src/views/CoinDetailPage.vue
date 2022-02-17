@@ -57,28 +57,39 @@
         <div class="my-10 sm:mt-0 flex flex-col justify-center text-center">
           <button
             class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            @click="toggleChange()"
           >
-            Cambiar
+            {{
+              toUSD
+                ? `${asset.symbol.toUpperCase()} / USD`
+                : `USD / ${asset.symbol.toUpperCase()}`
+            }}
           </button>
 
           <div class="flex flex-row my-5">
             <label class="w-full" for="convertValue">
               <input
+                v-model="value"
                 id="convertValue"
                 type="number"
                 class="text-center bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
+                :placeholder="
+                  toUSD
+                    ? `Valor en ${asset.symbol.toUpperCase()}`
+                    : 'Valor en USD'
+                "
               />
             </label>
           </div>
 
-          <span class="text-xl"></span>
+          <span class="text-xl">{{ convertedValue }}</span>
         </div>
       </div>
       <line-chart
         class="my-10"
         :colors="['#fc5353']"
         :min="(parseFloat(min) - 0.02).toFixed(2)"
-        :max="parseFloat(max).toFixed(2) + 0.02"
+        :max="(parseFloat(max) + 0.02).toFixed(2)"
         :data="data"
       />
       <h3 class="text-xl my-10">Mejores Ofertas de Cambio</h3>
@@ -129,6 +140,8 @@ export default {
       isLoading: false,
       data: {},
       markets: [],
+      value: null,
+      toUSD: true,
     };
   },
 
@@ -171,6 +184,14 @@ export default {
           this.$set(market, "isLoading", false);
         });
     },
+    toggleChange() {
+      this.toUSD = !this.toUSD;
+    },
+  },
+  watch: {
+    $route() {
+      this.getCoin();
+    },
   },
 
   computed: {
@@ -183,6 +204,13 @@ export default {
     avg() {
       if (this.prices.length == 0) return 0;
       return this.prices.reduce((p, c) => p + c) / this.prices.length;
+    },
+    convertedValue() {
+      return this.toUSD
+        ? `${this.value * this.asset.market_data.current_price.usd} USD`
+        : `${
+            this.value / this.asset.market_data.current_price.usd
+          } ${this.asset.symbol.toUpperCase()}`;
     },
   },
 };

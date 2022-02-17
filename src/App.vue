@@ -1,6 +1,6 @@
 <template>
   <main>
-    <ex-header />
+    <ex-header :links="links" />
     <router-view class="container px-5 sm:px-20 py-20 flex justify-center" />
   </main>
 </template>
@@ -11,6 +11,24 @@ import ExHeader from "@/components/ExHeader";
 export default {
   name: "app",
   components: { ExHeader },
+  data() {
+    return {
+      links: [
+        {
+          title: "BTC",
+          to: { name: "coin-detail", params: { id: "bitcoin" } },
+        },
+        {
+          title: "ETH",
+          to: { name: "coin-detail", params: { id: "ethereum" } },
+        },
+        {
+          title: "USDT",
+          to: { name: "coin-detail", params: { id: "tether" } },
+        },
+      ],
+    };
+  },
 };
 </script>
 
